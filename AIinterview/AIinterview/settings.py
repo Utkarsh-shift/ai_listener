@@ -147,7 +147,7 @@ from datetime import timedelta
 # string = config('PROCESS_KEY')
 # string = str(hashlib.md5(b'string'))
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(config('API_VALID_TIME',default=30))),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(config('API_VALID_TIME',default=3600))),
     'ALGORITHM': 'HS512',
     # 'SIGNING_KEY': string,
     # # 'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),

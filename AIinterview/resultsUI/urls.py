@@ -11,5 +11,5 @@ urlpatterns = [
     path('api/access_token',TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('',views.Welcome),
-    path('api/interviewTest',uploadView.as_view()),
+    path('api/ec2s1',uploadView.as_view()),
 ]
