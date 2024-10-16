@@ -86,9 +86,10 @@ DATABASES = {
         'USER': config('DB_USER'),   
         'PASSWORD': config('DB_PASS'),  
         # 'ROOT_PASSWORD' 
-        'HOST': config('DB_HOST'),   
+        'HOST': "freetier.c124kgwi0rh5.ap-south-1.rds.amazonaws.com",   
         'PORT': config('DB_PORT'),   
         'OPTIONS': {   
+            'charset':"utf8mb4",
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"   
         }   
     }   
