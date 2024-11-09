@@ -38,7 +38,7 @@ def trigger_webhook(api_url, bearer_token, payload):
         print("Payload:", payload)
         
         # Make the POST request
-        response = requests.post(api_url, headers=headers, json=payload, timeout=10)
+        response = requests.post(api_url, headers=headers, json=payload)
         
         print("Response status code:", response.status_code)
         print("Response body:", response.text)
