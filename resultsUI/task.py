@@ -142,10 +142,10 @@ def start_ec2_instance():
                 'echo piazzio > /home/ubuntu/spaceX123output.txt',
                 'conda activate s2 ',  
                 'cd /home/ubuntu/AI_G',  
-                'sudo systemctl restart gunicorn',
                 'sudo systemctl daemon-reload',
+                'sudo systemctl restart gunicorn',
                 'sudo systemctl restart gunicorn.socket gunicorn.service', 
-                'nohup celery -A your_project_name worker -l info &' 
+                'nohup celery -A AIinterview.celery worker --pool=solo -l info &' 
             ]
 
             print("The test here is *********************************************")
