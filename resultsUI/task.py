@@ -145,7 +145,7 @@ def start_ec2_instance():
                 'sudo systemctl daemon-reload',
                 'sudo systemctl restart gunicorn',
                 'sudo systemctl restart gunicorn.socket gunicorn.service', 
-                'nohup celery -A AIinterview.celery worker --pool=solo -l info &' 
+                'nohup celery -A AIinterview.celery worker --pool=solo -l info --logfile=/home/ubuntu/AI_G/celery.log &' 
             ]
 
             print("The test here is *********************************************")
