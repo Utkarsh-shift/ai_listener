@@ -25,27 +25,30 @@ import json
 import requests
 import json
 
-def trigger_webhook(api_url, bearer_token, payload):
 
+def trigger_webhook(api_url, bearer_token, payload):
     headers = {
         'Authorization': f'Bearer {bearer_token}',  # Bearer token for authentication
         'Content-Type': 'application/json',  # Set content type to JSON
     }
     
     try:
-        # Make the POST request with the provided URL, headers, and body (payload)
-        response = requests.post(api_url, headers=headers, json=payload)
+        print("Sending request to:", api_url)
+        print("Headers:", headers)
+        print("Payload:", payload)
         
-        # Raise an error for any bad responses (optional, based on your error handling preferences)
-        # response.raise_for_status()
+        # Make the POST request
+        response = requests.post(api_url, headers=headers, json=payload, timeout=10)
         
-        # Return the response JSON (or response text, depending on the API)
-        return response.json()  # or response.text if the API does not return JSON
-    except requests.exceptions.HTTPError as http_err:
-        return {"error": f"HTTP error occurred: {http_err}"}
-    except Exception as err:
-        return {"error": f"Other error occurred: {err}"}
-
+        print("Response status code:", response.status_code)
+        print("Response body:", response.text)
+        
+        # Check if the response is JSON
+        return response.json() if response.headers.get("Content-Type") == "application/json" else {"error": "Invalid response format"}
+    except requests.exceptions.Timeout:
+        return {"error": "Request timed out"}
+    except requests.exceptions.RequestException as err:
+        return {"error": f"Request error: {err}"}
 
             
 
@@ -55,10 +58,11 @@ class uploadView(APIView):
 
     def post(self,request,format=None):
 
-        print(request.data) 
-        # start_ec2_instance()
-        brearer_token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI5Mjg0NTQ2LCJpYXQiOjE3MjkwNjg1NDYsImp0aSI6IjUwNWM0MjE2YTFkYjRlODk5NmY3MGVmZGNjOTVmZjkwIiwidXNlcl9pZCI6MX0.AasTYBYmyFk3E73sUE0vz_UGhnzI27uUfw89K9TkdGg"
-        t=trigger_webhook("http://192.168.1.128/api/interviewTests",brearer_token,request.data)
+        print(request.data)
+        print("Here in the data wake up api call ")
+        start_ec2_instance()
+        brearer_token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwODg1OTI3LCJpYXQiOjE3MzA4ODQxMjcsImp0aSI6ImI1MGNiMzE1YjhmZDRjMDY4YmZhNWQwNTlmYWU5ZDUzIiwidXNlcl9pZCI6MX0.bg3cIYjb0S0TNbAS3eB4EEE-L0xIzclxboUd6LiK6aY"
+        t=trigger_webhook("http://10.0.8.162:8000/api/interviewTest",brearer_token,request.data)
         print(t)
         return JsonResponse(t)
 
