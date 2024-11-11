@@ -138,6 +138,15 @@ def start_ec2_instance():
 
             time.sleep(20)
 
+            # commands = [
+            #     'echo piazzio > /home/ubuntu/spaceX123output.txt',
+            #     'conda activate s2 ',  
+            #     'cd /home/ubuntu/AI_G',  
+            #     'sudo systemctl daemon-reload',
+            #     'sudo systemctl restart gunicorn',
+            #     'sudo systemctl restart gunicorn.socket gunicorn.service', 
+            #     'nohup celery -A AIinterview.celery worker --pool=solo -l info --logfile=/home/ubuntu/AI_G/celery.log &' 
+            # ]
             commands = [
                 'echo piazzio > /home/ubuntu/spaceX123output.txt',
                 'conda activate s2 ',  
@@ -145,8 +154,9 @@ def start_ec2_instance():
                 'sudo systemctl daemon-reload',
                 'sudo systemctl restart gunicorn',
                 'sudo systemctl restart gunicorn.socket gunicorn.service', 
-                'nohup celery -A AIinterview.celery worker --pool=solo -l info --logfile=/home/ubuntu/AI_G/celery.log &' 
+                'sudo systemctl start celery' 
             ]
+            
 
             print("The test here is *********************************************")
             ip = "10.0.8.162"
