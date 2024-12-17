@@ -24,8 +24,7 @@ import json
 
 import requests
 import json
-
-
+from decouple import config
 def trigger_webhook(api_url, bearer_token, payload):
     headers = {
         'Authorization': f'Bearer {bearer_token}',  # Bearer token for authentication
@@ -61,32 +60,14 @@ class uploadView(APIView):
         print(request.data)
         print("Here in the data wake up api call ")
         start_ec2_instance()
-        brearer_token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU5ODYzMTExLCJpYXQiOjE3MzEwNjMxMTEsImp0aSI6ImYxYTJmZmZkZGQ5YjRjODNhZTE4YjkyMTVlMGY1NTBlIiwidXNlcl9pZCI6MX0.FPdBmcYAmHhgR9Sycfu_IIVgcW-ECx59XC0qJY86328"
+        brearer_token=config("BEARER_TOKEN")
         try:
-            t=trigger_webhook("http://10.0.8.162/api/interviewTest",brearer_token,request.data)
-            print(t)
+            t=trigger_webhook(config("SERVER_2_URL"),brearer_token,request.data)
+            print("In try block of trigger webhook",t)
         except:
-            t=trigger_webhook("http://65.0.92.35/api/interviewTest",brearer_token,request.data)
-            print(t)
+            t=trigger_webhook(config("SERVER_2_URL"),brearer_token,request.data)
+            print("in exception trigger webhook block",t)
         return JsonResponse(t)
 
 
 
-# Create your views here. 
-def Welcome(request):
-    
-    if request.method == "POST":
-        if 'File' not in request.FILES:
-            return HttpResponse("Error: No file uploaded.")
-
-        file1 = request.FILES["File"]
-        file1.name = file1.name.replace(" ","_")
-        file1.name = re.sub(r'[^\w.-]',"",file1.name)
-        # pattern =r"[^a-zA-Z0-9\s]"
-        # file1.name = re.sub(pattern,'',file1.name)
-        filepath = os.path.join(settings.MEDIA_ROOT, str(file1.name).replace(" ","_"))
-        
-        # Storing file on server
-        document = interviewTest1.objects.create(file=file1)
-        document.save()
-    return render(request,"Home.html")

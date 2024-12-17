@@ -138,19 +138,11 @@ def start_ec2_instance():
 
             time.sleep(20)
 
-            # commands = [
-            #     'echo piazzio > /home/ubuntu/spaceX123output.txt',
-            #     'conda activate s2 ',  
-            #     'cd /home/ubuntu/AI_G',  
-            #     'sudo systemctl daemon-reload',
-            #     'sudo systemctl restart gunicorn',
-            #     'sudo systemctl restart gunicorn.socket gunicorn.service', 
-            #     'nohup celery -A AIinterview.celery worker --pool=solo -l info --logfile=/home/ubuntu/AI_G/celery.log &' 
-            # ]
+            env_name=config("ENV_NAME")
             commands = [
                 'echo piazzio > /home/ubuntu/spaceX123output.txt',
-                'conda activate s2 ',  
-                'cd /home/ubuntu/AI_G',  
+                f'conda activate {env_name} ',  
+                'cd /home/ubuntu/new_AVIPA',  
                 'sudo systemctl daemon-reload',
                 'sudo systemctl restart gunicorn',
                 'sudo systemctl restart gunicorn.socket gunicorn.service', 
@@ -159,11 +151,8 @@ def start_ec2_instance():
             
 
             print("The test here is *********************************************")
-            ip = "10.0.8.162"
-            ec2_user = "ubuntu"
-            key_path = "/home/ubuntu/DjangiAVItest/EC2kaypair.pem"
-
-
+            from decouple import config 
+            
             response = ssm_client.send_command(
                 InstanceIds=[instance_id],
                 DocumentName="AWS-RunShellScript",
