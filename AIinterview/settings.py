@@ -86,7 +86,7 @@ DATABASES = {
         'USER': config('DB_USER'),   
         'PASSWORD': config('DB_PASS'),  
         # 'ROOT_PASSWORD' 
-        'HOST': "localhost",   
+        'HOST': config('DB_HOST'),   
         'PORT': 3306,   
         'OPTIONS': {   
             'charset':"utf8mb4",
