@@ -15,6 +15,8 @@ sudo systemctl restart gunicorn.socket gunicorn.service
 echo "Reloading Nginx..."
 sudo systemctl reload nginx
 
+
+sudo systemctl restart celery
 # Check the Status of Gunicorn
 echo "Checking Gunicorn service status..."
 sudo systemctl status gunicorn
