@@ -3,3 +3,4 @@ resultsUI/__pycache__
 resultsUI/migrations
 /avi_python
 .env
+celery.log

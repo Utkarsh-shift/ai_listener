@@ -29,17 +29,30 @@ class uploadView(APIView):
         from .serializers import LinkSerializer
         serializer = LinkSerializer(data=request.data)
         if serializer.is_valid():
-            links1 = serializer.validated_data
-            new_links=[]
-            Id=[]
-            Questions=[]
-            batch_id=str(request.data["batch_id"])
-            webhook_url = str(request.data["server_url"])
-            print("###################The batch id received to listener is #######################" , batch_id)
-            for item in links1["links"]:
-                new_links.append(item["link"])
-                Questions.append(item["question"])
-            print("<<<<<<<<<<<<<<<<<<",json.dumps(request.data),">>>>>>>>>>>>>>>>>>") 
+            if request.data['is_agent']=="1":
+                    links1 = serializer.validated_data
+                    webhook_url = str(request.data["server_url"])
+                    session_id=request.data['openai_id']
+                    batch_id=str(request.data["batch_id"])
+                    print("======================================",session_id)
+                    print("<<<<<<<<<<<<<<<<<<",json.dumps(request.data),">>>>>>>>>>>>>>>>>>") 
+            else : 
+                    links1 = serializer.validated_data
+                    new_links=[]
+                    Questions=[]
+                    batch_id=str(request.data["batch_id"])
+                    webhook_url = str(request.data["server_url"])
+                    proctoring_data = request.data["proctoring_data"]
+                    skills=request.data["skill"]
+                    focus_skills=request.data["focus_skill"]
+                    print(skills,"---------------------------------------------------",focus_skills)
+                    print(proctoring_data,"........................")
+                    print("###################The batch id received to listener is #######################" , batch_id)
+                    for item in links1["links"]:
+                        new_links.append(item["link"])
+                        Questions.append(item["question"])
+                    print("<<<<<<<<<<<<<<<<<<",json.dumps(request.data),">>>>>>>>>>>>>>>>>>")
+                     
             if BatchEntry.objects.filter(batch_id=batch_id).exists():
                 status_values = BatchEntry.objects.filter(batch_id=batch_id).values_list('status', flat=True)
                 if str(status_values[0])=="processed":
@@ -58,9 +71,7 @@ class uploadView(APIView):
                          "status": "received",
                          "created_at": created_at
                           }
-                        return JsonResponse(res , safe=False)
-                   
-                     
+                        return JsonResponse(res , safe=False)  
                     else : 
                         result_final={"batch_id":batch_id,"status":"processed","data":results_values[0]}
                         print("The batch is found and is processed " , result_final)
@@ -86,7 +97,7 @@ class uploadView(APIView):
                     return JsonResponse(response_data, safe=False)
                 
             else:
-                print("lala")
+          
                 res = start_ec2_instance.delay(request.data)
 
                 from datetime import datetime

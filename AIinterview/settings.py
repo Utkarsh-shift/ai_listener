@@ -116,15 +116,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
@@ -134,6 +128,9 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
 
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_IGNORE_RESULT = False  
+CELERY_TASK_STORE_ERRORS_EVEN_IF_IGNORED = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -142,8 +139,6 @@ STATIC_URL = 'static/'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
@@ -152,14 +147,9 @@ REST_FRAMEWORK = {
     ),}
 
 from datetime import timedelta
-# string = config('PROCESS_KEY')
-# string = str(hashlib.md5(b'string'))
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(config('API_VALID_TIME',default=3600))),
     'ALGORITHM': 'HS512',
-    # 'SIGNING_KEY': string,
-    # # 'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    # # 'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',

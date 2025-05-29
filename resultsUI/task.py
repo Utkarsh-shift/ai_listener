@@ -11,9 +11,11 @@ import requests
 from celery import current_app
 from django.db import connection
 import json
+
+
 def trigger_webhook(api_url, bearer_token, payload):
     headers = {
-        'Authorization': f'Bearer {config("BEARER_TOKEN")}',  # Bearer token for authentication
+        'Authorization': f'Bearer {config("BEARER_TOKEN")}', 
         'Content-Type': 'application/json',  # Set content type to JSON
     }
     
@@ -21,7 +23,11 @@ def trigger_webhook(api_url, bearer_token, payload):
         print("Sending request to:", api_url)
         print("Headers:", headers)
         print("Payload:", payload)
+        # dump_payload = json.dumps(payload)
+        # print(dump_payload, "*******")
+        # payload = {"server_url": "http://api.placecom.local/webhook/prep-edge-ai-interview-feedback", "batch_id": "22e054de-63ca-4940-a192-cb47036d55d9", "openai_id": "sess_BboB8H9HevpQ6Z8VLNqBF", "is_agent": "1", "links": [{"id": "9354b604-ae9b-43b9-b7d1-1d4a955be28a", "link": "https://ai-int-qa.placecom.co.s3.amazonaws.com/sess_BboB8H9HevpQ6Z8VLNqBF/Camera_uploads/final_sess_BboB8H9HevpQ6Z8VLNqBF.mp4"}], "skill": [{"skill_title": "python"}], "focus_skill": [{"skill_title": "none"}], "proctoring_data": [{"proctering_title": "Tab Switch", "proctering_count": 0}, {"proctering_title": "Exited Full Screen", "proctering_count": 0}, {"proctering_title": "Multiple Face Detection", "proctering_count": 9}, {"proctering_title": "cellphone", "proctering_count": 11}, {"proctering_title": "Dual monitor", "proctering_count": 0}, {"proctering_title": "no face detected", "proctering_count": 0}]}
 
+    
         response = requests.post(api_url, headers=headers, json=payload)
         
         print("Response status code:", response.status_code)
@@ -72,6 +78,8 @@ def stop_ec2_instance():
 
 @shared_task(bind=True)
 def start_ec2_instance(self,data):
+    print("##############",data)
+    data = json.dumps(data)
     print("********************************************************************************************")
  # Extract task metadata
     task_id = self.request.id
@@ -88,19 +96,7 @@ def start_ec2_instance(self,data):
     print(f"🔹 Task Arguments: {task_args}")
     print(f"🔹 Task Keyword Arguments: {task_kwargs}")
 
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT COUNT(*) FROM django_celery_results_taskresult WHERE task_id = %s", [task_id])
-        task_exists = cursor.fetchone()[0]
 
-        if task_exists:
-       
-            sql = """
-                UPDATE django_celery_results_taskresult
-                SET task_name = %s, worker = %s, task_args = %s, task_kwargs = %s
-                WHERE task_id = %s
-            """
-            cursor.execute(sql, [task_name, worker_name, task_args, task_kwargs, task_id])
-           
 
 
     print(f"Starting EC2 Instance with data: {data}")
@@ -140,7 +136,7 @@ def start_ec2_instance(self,data):
             brearer_token=config("BEARER_TOKEN")
             
             try:
-                print("##############",data)
+              
                 result = trigger_webhook(config("SERVER_2_URL"), brearer_token, data)
                 print("In try block of trigger webk", result)
             except Exception as e:
@@ -242,9 +238,6 @@ def start_ec2_instance(self,data):
                     result = {"error": "Webhook trigger failed after retry."}
     except Exception as e:
         print(f'Error initializing {instance_id}: {e}')
-
-
-
 
 def getstatus():
     aws_access_key_id = config("AWS_ACCESS_KEY_ID")
