@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+from datetime import datetime
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 from django.http import request,HttpResponse,JsonResponse
@@ -19,17 +19,30 @@ from .models import LinkEntry, BatchEntry
 import requests
 import json
 from decouple import config
-
+from .serializers import LinkSerializer
             
 
 class uploadView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes=[IsAuthenticated,] 
     def post(self,request,*args , **kwargs ):
-        from .serializers import LinkSerializer
+        
+
         serializer = LinkSerializer(data=request.data)
+        print("****************", request.data)
+        
         if serializer.is_valid():
-            if request.data['is_agent']=="1":
+            is_agent = "1" 
+            try : 
+                print("herererererrerer")
+                request.data['is_agent']=="1"
+                is_agent = "1"
+            except : 
+                print("**********************")
+                is_agent = "0"
+
+            if is_agent=="1":
+
                     links1 = serializer.validated_data
                     webhook_url = str(request.data["server_url"])
                     session_id=request.data['openai_id']
@@ -63,7 +76,7 @@ class uploadView(APIView):
                         LinkEntry.objects.filter(batch_id = batch_id).delete()
                         BatchEntry.objects.filter(batch_id = batch_id).delete()
                         start_ec2_instance.delay(data=request.data)
-                        from datetime import datetime
+                        
                         created_at = datetime.utcnow().isoformat() + 'Z'
                         batch_id = request.data['batch_id']
                         res = {
@@ -100,7 +113,7 @@ class uploadView(APIView):
           
                 res = start_ec2_instance.delay(request.data)
 
-                from datetime import datetime
+                
                 created_at = datetime.utcnow().isoformat() + 'Z'
                 batch_id = request.data['batch_id']
                 res = {
